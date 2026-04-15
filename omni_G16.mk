@@ -14,7 +14,7 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
 $(call inherit-product, device/g16/G16/device.mk)
 
 # Inherit TWRP common configuration (instead of Omni's)
-$(call inherit-product, bootable/recovery/twrp_common.mk)
+# $(call inherit-product, bootable/recovery/twrp_common.mk)
 
 # Device identifier. This must come after all inclusions
 PRODUCT_DEVICE := G16
