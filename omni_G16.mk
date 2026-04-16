@@ -5,18 +5,18 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-# Inherit from those products. Most specific first.
+# 按从最具体到最一般的顺序继承产品配置
 $(call inherit-product-if-exists, $(SRC_TARGET_DIR)/product/embedded.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
 
-# Inherit from G16 device
+# 继承来自设备树的具体配置
 $(call inherit-product, device/g16/G16/device.mk)
 
-# Inherit TWRP common configuration (instead of Omni's)
-# $(call inherit-product, bootable/recovery/twrp_common.mk)
+# 关键修改：继承 TWRP 通用配置，定义恢复镜像构建目标
+$(call inherit-product, bootable/recovery/twrp.mk)
 
-# Device identifier. This must come after all inclusions
+# 设备标识符。此部分必须位于所有 `inherit-product` 语句之后
 PRODUCT_DEVICE := G16
 PRODUCT_NAME := omni_G16
 PRODUCT_BRAND := G16
