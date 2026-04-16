@@ -30,7 +30,8 @@ TARGET_OTA_ASSERT_DEVICE := G16
 
 # File systems
 BOARD_HAS_LARGE_FILESYSTEM := true
-#BOARD_RECOVERYIMAGE_PARTITION_SIZE := 33554432 # This is the maximum known partition size, but it can be higher, so we just omit it
+# ==== 关键修复1: 必须提供分区大小！请根据您设备的实际 `recovery` 分区大小（字节）修改 ====
+BOARD_RECOVERYIMAGE_PARTITION_SIZE := 67108864 # 示例：64MB。通过 `cat /proc/partitions` 在设备上查看并计算。
 BOARD_SYSTEMIMAGE_PARTITION_TYPE := ext4
 BOARD_USERDATAIMAGE_FILE_SYSTEM_TYPE := ext4
 BOARD_VENDORIMAGE_FILE_SYSTEM_TYPE := ext4
@@ -43,6 +44,7 @@ AB_OTA_UPDATER := true
 TW_INCLUDE_REPACKTOOLS := true
 
 # Kernel
+# ==== 潜在风险：请确保 prebuilt/Image.gz 文件存在！ ====
 BOARD_KERNEL_CMDLINE := bootopt=64S3,32N2,64N2 buildvariant=user
 TARGET_PREBUILT_KERNEL := $(DEVICE_PATH)/prebuilt/Image.gz
 TARGET_PREBUILT_DTB := $(DEVICE_PATH)/prebuilt/dtb.img
@@ -64,6 +66,8 @@ TARGET_KERNEL_CONFIG := G16_defconfig
 
 # Platform
 TARGET_BOARD_PLATFORM := mt6765
+BOARD_USES_MTK_HARDWARE := true
+MTK_HARDWARE := true
 
 # Hack: prevent anti rollback
 PLATFORM_SECURITY_PATCH := 2099-12-31
@@ -71,8 +75,27 @@ VENDOR_SECURITY_PATCH := 2099-12-31
 PLATFORM_VERSION := 16.1.0
 
 # TWRP Configuration
+# ==== 关键修复2: 补充必要的TWRP功能配置 ====
 TW_THEME := portrait_hdpi
+DEVICE_RESOLUTION := 720x1600 # 请根据您的设备屏幕实际分辨率修改
+TW_BRIGHTNESS_PATH := /sys/class/leds/lcd-backlight/brightness
+TW_MAX_BRIGHTNESS := 255
+TW_DEFAULT_BRIGHTNESS := 120
+# 基本功能
 TW_EXTRA_LANGUAGES := true
+TW_EXCLUDE_DEFAULT_USB_INIT := true
 TW_SCREEN_BLANK_ON_BOOT := true
 TW_INPUT_BLACKLIST := "hbtp_vm"
 TW_USE_TOOLBOX := true
+TW_INCLUDE_NTFS_3G := true
+TW_INCLUDE_FUSE_EXFAT := true
+TW_INCLUDE_RESETPROP := true
+TW_INCLUDE_REPACKTOOLS := true
+# 加密支持 (Android 11+ FBE)
+# TW_INCLUDE_CRYPTO := true
+# TW_CRYPTO_USE_SYSTEM_VOLD := true
+# 日志
+TWRP_INCLUDE_LOGCAT := true
+TARGET_USES_LOGD := true
+# 禁用AVB验证 (刷入vbmeta时可能需要)
+BOARD_AVB_ENABLE := false
